@@ -1,12 +1,13 @@
 'use client';
 
+import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 interface NavItem {
 	label: string;
 	href: string;
-	icon: JSX.Element;
+	icon: React.ReactElement;
 }
 
 function Item({ item, active }: { item: NavItem; active: boolean }) {
@@ -59,7 +60,7 @@ export default function Sidebar({ collapsed = false, onToggle }: { collapsed?: b
 		},
 		{
 			label: 'API Playground',
-			href: '#',
+			href: '/playground',
 			icon: (
 				<svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6l4 2" />
