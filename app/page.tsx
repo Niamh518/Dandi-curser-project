@@ -44,7 +44,7 @@ export default function Home() {
               Welcome back, {user.user_metadata?.full_name || user.email}!
             </h2>
             <p className="text-gray-600 mb-6">
-              You're now signed in. Access your dashboard and manage your API keys.
+              You're successfully signed in. Choose where you'd like to go next.
             </p>
             <div className="flex gap-4 items-center flex-col sm:flex-row">
               <Link

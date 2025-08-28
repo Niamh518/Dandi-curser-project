@@ -41,11 +41,8 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(redirectUrl)
   }
 
-  // If there's a user and they're trying to access auth pages, redirect to dashboard
-  if (user && request.nextUrl.pathname === '/') {
-    const redirectUrl = new URL('/dashboard', request.url)
-    return NextResponse.redirect(redirectUrl)
-  }
+  // Remove the automatic redirect from home to dashboard
+  // Let users choose where they want to go
 
   return supabaseResponse
 }
