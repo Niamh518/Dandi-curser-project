@@ -1,161 +1,159 @@
 'use client'
 
-import { useAuth } from "./contexts/AuthContext";
-import LoginButton from "./components/LoginButton";
-import UserProfileInfo from "./components/UserProfileInfo";
+import { useAuth } from './contexts/AuthContext'
+import LandingPage from './components/LandingPage'
+import UserProfileInfo from './components/UserProfileInfo'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Check, Star, GitBranch, Users, Zap } from 'lucide-react'
 
-export default function Overview() {
-  const { user, loading } = useAuth();
+export default function HomePage() {
+  const { user, loading } = useAuth()
 
+  // Show loading state
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-full">
+      <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-600"></div>
       </div>
-    );
+    )
   }
 
+  // Show landing page for non-authenticated users
   if (!user) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Welcome to Dandi</h1>
-          <p className="text-gray-600 mb-8">Sign in to access your dashboard and manage your API keys.</p>
-          <LoginButton />
-        </div>
-      </div>
-    );
+    return <LandingPage />
   }
 
+  // Show dashboard for authenticated users
   return (
     <div className="p-8">
-      {/* Header */}
+      {/* Welcome Section */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Overview</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome back, {user.user_metadata?.full_name || user.email}!</h1>
+        <p className="text-gray-600">Manage your API keys and access Dandi's powerful GitHub repository analysis tools.</p>
       </div>
 
-      {/* Current Plan Section */}
-      <div className="mb-8">
-        <div className="bg-gradient-to-r from-purple-600 to-orange-600 rounded-lg p-6 text-white">
-          <div className="flex justify-between items-start">
-            <div>
-              <p className="text-sm font-medium opacity-90 mb-1">CURRENT PLAN</p>
-              <h2 className="text-2xl font-bold mb-4">Dandi API</h2>
-              <div className="mb-2">
-                <div className="flex justify-between text-sm mb-1">
-                  <span>API Limit</span>
-                  <span>24 / 1,000 Requests</span>
-                </div>
-                <div className="w-full bg-white bg-opacity-20 rounded-full h-2">
-                  <div className="bg-white h-2 rounded-full" style={{ width: '2.4%' }}></div>
-                </div>
-              </div>
-            </div>
-            <button className="bg-white bg-opacity-20 hover:bg-opacity-30 px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-              Manage Plan
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* User Profile Information */}
+      {/* User Profile Info */}
       <div className="mb-8">
         <UserProfileInfo />
       </div>
 
-      {/* API Keys Section */}
-      <div className="bg-white rounded-lg shadow">
-        <div className="p-6 border-b border-gray-200">
-          <div className="flex justify-between items-start">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">API Keys</h3>
-              <p className="text-sm text-gray-600">
-                The key is used to authenticate your requests to the Research API. To learn more, see the documentation page.
-              </p>
+      {/* Current Plan */}
+      <div className="mb-8">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center">
+              <Star className="w-5 h-5 mr-2 text-yellow-500" />
+              Current Plan
+            </CardTitle>
+            <CardDescription>Your current subscription and usage</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-between">
+              <div>
+                <Badge className="bg-green-100 text-green-800 mb-2">Free Plan</Badge>
+                <p className="text-sm text-gray-600">1,000 API calls/month</p>
+              </div>
+              <Button variant="outline">Upgrade to Pro</Button>
             </div>
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-              + Create New Key
-            </button>
-          </div>
-        </div>
-        
-        <div className="p-6">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">NAME</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">USAGE</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">KEY</th>
-                  <th className="text-left py-3 px-4 font-medium text-gray-900">OPTIONS</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b border-gray-100">
-                  <td className="py-3 px-4 text-sm text-gray-900">AAA</td>
-                  <td className="py-3 px-4 text-sm text-gray-600">0</td>
-                  <td className="py-3 px-4 text-sm text-gray-600 font-mono">dandi-17*************</td>
-                  <td className="py-3 px-4">
-                    <div className="flex space-x-2">
-                      <button className="p-1 hover:bg-gray-100 rounded">
-                        <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                        </svg>
-                      </button>
-                      <button className="p-1 hover:bg-gray-100 rounded">
-                        <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                        </svg>
-                      </button>
-                      <button className="p-1 hover:bg-gray-100 rounded">
-                        <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                        </svg>
-                      </button>
-                      <button className="p-1 hover:bg-gray-100 rounded">
-                        <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="py-3 px-4 text-sm text-gray-900">Real World With Vercel</td>
-                  <td className="py-3 px-4 text-sm text-gray-600">0</td>
-                  <td className="py-3 px-4 text-sm text-gray-600 font-mono">dandi-17*************</td>
-                  <td className="py-3 px-4">
-                    <div className="flex space-x-2">
-                      <button className="p-1 hover:bg-gray-100 rounded">
-                        <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                        </svg>
-                      </button>
-                      <button className="p-1 hover:bg-gray-100 rounded">
-                        <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                        </svg>
-                      </button>
-                      <button className="p-1 hover:bg-gray-100 rounded">
-                        <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                        </svg>
-                      </button>
-                      <button className="p-1 hover:bg-gray-100 rounded">
-                        <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Quick Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">API Calls Used</CardTitle>
+            <Zap className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">247</div>
+            <p className="text-xs text-muted-foreground">+20% from last month</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Repositories Analyzed</CardTitle>
+            <GitBranch className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">12</div>
+            <p className="text-xs text-muted-foreground">+3 this week</p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Active API Keys</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">2</div>
+            <p className="text-xs text-muted-foreground">+1 new key</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Recent Activity */}
+      <div className="mb-8">
+        <Card>
+          <CardHeader>
+            <CardTitle>Recent Activity</CardTitle>
+            <CardDescription>Your latest API usage and repository analyses</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center space-x-4">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium">Analyzed facebook/react</p>
+                  <p className="text-xs text-gray-500">2 hours ago</p>
+                </div>
+                <Badge variant="secondary">Success</Badge>
+              </div>
+              <div className="flex items-center space-x-4">
+                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium">Created new API key</p>
+                  <p className="text-xs text-gray-500">1 day ago</p>
+                </div>
+                <Badge variant="secondary">Info</Badge>
+              </div>
+              <div className="flex items-center space-x-4">
+                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                <div className="flex-1">
+                  <p className="text-sm font-medium">Analyzed vercel/next.js</p>
+                  <p className="text-xs text-gray-500">3 days ago</p>
+                </div>
+                <Badge variant="secondary">Success</Badge>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Quick Actions */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>API Playground</CardTitle>
+            <CardDescription>Test your API keys and explore repository analysis</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button className="w-full">Open Playground</Button>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Documentation</CardTitle>
+            <CardDescription>Learn how to integrate Dandi API into your projects</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button variant="outline" className="w-full">View Docs</Button>
+          </CardContent>
+        </Card>
       </div>
     </div>
-  );
+  )
 }
