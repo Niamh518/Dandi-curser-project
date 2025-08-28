@@ -1,137 +1,185 @@
-'use client';
+'use client'
 
-import React from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { useAuth } from '../contexts/AuthContext'
+import { useRouter, usePathname } from 'next/navigation'
+import Link from 'next/link'
+import { useState } from 'react'
 
 interface NavItem {
-	label: string;
-	href: string;
-	icon: React.ReactElement;
+  name: string
+  href: string
+  icon: React.ReactNode
+  requiresAuth?: boolean
 }
 
-function Item({ item, active }: { item: NavItem; active: boolean }) {
-	return (
-		<Link
-			href={item.href}
-			className={`flex items-center gap-3 rounded-xl px-3 py-2 text-sm transition-colors ${
-				active
-					? 'bg-blue-50 text-blue-700'
-					: 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-			}`}
-		>
-			<span className="shrink-0">{item.icon}</span>
-			<span className="truncate">{item.label}</span>
-		</Link>
-	);
-}
+export default function Sidebar() {
+  const { user, signOut } = useAuth()
+  const router = useRouter()
+  const pathname = usePathname()
+  const [collapsed, setCollapsed] = useState(false)
 
-export default function Sidebar({ collapsed = false, onToggle }: { collapsed?: boolean; onToggle?: () => void }) {
-	const pathname = usePathname();
+  const handleSignOut = async () => {
+    await signOut()
+    router.push('/')
+  }
 
-	const items: NavItem[] = [
-		{
-			label: 'Overview',
-			href: '/dashboard',
-			icon: (
-				<svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6" />
-				</svg>
-			),
-		},
-		{
-			label: 'Research Assistant',
-			href: '#',
-			icon: (
-				<svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5z" />
-				</svg>
-			),
-		},
-		{
-			label: 'Research Reports',
-			href: '#',
-			icon: (
-				<svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-6a2 2 0 012-2h6" />
-					<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h6m0 0v6m0-6L10 16" />
-				</svg>
-			),
-		},
-		{
-			label: 'API Playground',
-			href: '/playground',
-			icon: (
-				<svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6l4 2" />
-				</svg>
-			),
-		},
-		{
-			label: 'Invoices',
-			href: '#',
-			icon: (
-				<svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 14l2-2m0 0l2-2m-2 2l2 2m-2-2L9 10m12 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-				</svg>
-			),
-		},
-		{
-			label: 'Documentation',
-			href: '#',
-			icon: (
-				<svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-					<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 20l9-5-9-5-9 5 9 5z" />
-				</svg>
-			),
-		},
-	];
+  const navItems: NavItem[] = [
+    {
+      name: 'Overview',
+      href: '/',
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5a2 2 0 012-2h4a2 2 0 012 2v6H8V5z" />
+        </svg>
+      )
+    },
+    {
+      name: 'Research Assistant',
+      href: '/research-assistant',
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+        </svg>
+      ),
+      requiresAuth: true
+    },
+    {
+      name: 'Research Reports',
+      href: '/research-reports',
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+      ),
+      requiresAuth: true
+    },
+    {
+      name: 'API Playground',
+      href: '/playground',
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+        </svg>
+      )
+    },
+    {
+      name: 'API Keys',
+      href: '/api-keys',
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+        </svg>
+      ),
+      requiresAuth: true
+    },
+    {
+      name: 'Documentation',
+      href: '/documentation',
+      icon: (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+        </svg>
+      )
+    }
+  ]
 
-	return (
-		<aside className={`sticky top-0 h-screen shrink-0 border-r bg-white py-6 ${collapsed ? 'w-16 px-2' : 'w-64 px-4'}`}>
-			<div className={`mb-6 flex items-center justify-between ${collapsed ? 'px-0' : 'px-2'}`}>
-				<div className={`text-lg font-semibold ${collapsed ? 'text-center w-full' : ''}`}>{collapsed ? 'd' : 'dandi'}</div>
-				{onToggle && (
-					<button
-						onClick={onToggle}
-						className={`rounded-lg border px-2 py-1 text-xs text-gray-600 hover:bg-gray-50 ${collapsed ? 'hidden' : ''}`}
-						aria-label="Collapse sidebar"
-					>
-						⟨
-					</button>
-				)}
-			</div>
-			<nav className="space-y-1">
-				{items.map((item) => (
-					<div key={item.label}>
-						{collapsed ? (
-							<Link
-								href={item.href}
-								className={`flex items-center justify-center rounded-xl p-3 text-sm transition-colors ${
-									pathname === item.href ? 'bg-blue-50 text-blue-700' : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-								}`}
-							>
-								{item.icon}
-							</Link>
-						) : (
-							<Item item={item} active={pathname === item.href} />
-						)}
-					</div>
-				))}
-			</nav>
-			{onToggle && collapsed && (
-				<div className="absolute bottom-4 left-0 right-0 flex justify-center">
-					<button
-						onClick={onToggle}
-						className="rounded-lg border px-2 py-1 text-xs text-gray-600 hover:bg-gray-50"
-						aria-label="Expand sidebar"
-					>
-						⟩
-					</button>
-				</div>
-			)}
-		</aside>
-	);
+  const filteredNavItems = navItems.filter(item => 
+    !item.requiresAuth || (item.requiresAuth && user)
+  )
+
+  return (
+    <div className={`bg-white border-r border-gray-200 flex flex-col ${collapsed ? 'w-16' : 'w-64'} transition-all duration-300`}>
+      {/* Header */}
+      <div className="p-4 border-b border-gray-200">
+        <div className="flex items-center justify-between">
+          {!collapsed && (
+            <div className="flex items-center space-x-2">
+              <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-orange-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-sm">D</span>
+              </div>
+              <span className="font-semibold text-gray-900">Dandi</span>
+            </div>
+          )}
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            className="p-1 rounded-md hover:bg-gray-100"
+          >
+            <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      {/* Navigation */}
+      <nav className="flex-1 p-4 space-y-2">
+        {filteredNavItems.map((item) => {
+          const isActive = pathname === item.href
+          return (
+            <Link
+              key={item.name}
+              href={item.href}
+              className={`flex items-center space-x-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                isActive
+                  ? 'bg-purple-100 text-purple-700'
+                  : 'text-gray-700 hover:bg-gray-100'
+              }`}
+            >
+              <span className="flex-shrink-0">{item.icon}</span>
+              {!collapsed && <span>{item.name}</span>}
+            </Link>
+          )
+        })}
+      </nav>
+
+      {/* User Section */}
+      {user && (
+        <div className="p-4 border-t border-gray-200">
+          <div className="flex items-center space-x-3">
+            {user.user_metadata?.avatar_url ? (
+              <img
+                src={user.user_metadata.avatar_url}
+                alt={user.user_metadata?.full_name || user.email || 'User'}
+                className="w-8 h-8 rounded-full"
+              />
+            ) : (
+              <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+                <span className="text-sm font-medium text-gray-600">
+                  {user.email?.charAt(0).toUpperCase()}
+                </span>
+              </div>
+            )}
+            {!collapsed && (
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-gray-900 truncate">
+                  {user.user_metadata?.full_name || user.email}
+                </p>
+                <button
+                  onClick={handleSignOut}
+                  className="text-xs text-gray-500 hover:text-red-600"
+                >
+                  Sign out
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Login Button for non-authenticated users */}
+      {!user && !collapsed && (
+        <div className="p-4 border-t border-gray-200">
+          <Link
+            href="/"
+            className="w-full flex items-center justify-center px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+          >
+            Sign In
+          </Link>
+        </div>
+      )}
+    </div>
+  )
 }
 
 

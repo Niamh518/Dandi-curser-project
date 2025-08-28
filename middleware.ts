@@ -35,14 +35,8 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // If there's no user and the user is trying to access a protected route
-  if (!user && request.nextUrl.pathname.startsWith('/dashboard')) {
-    const redirectUrl = new URL('/', request.url)
-    return NextResponse.redirect(redirectUrl)
-  }
-
-  // Remove the automatic redirect from home to dashboard
-  // Let users choose where they want to go
+  // For now, allow all routes - the sidebar will handle authentication display
+  // You can add protected route logic here if needed
 
   return supabaseResponse
 }
