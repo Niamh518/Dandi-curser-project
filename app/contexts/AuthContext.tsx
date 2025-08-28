@@ -19,12 +19,47 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
 
+  // Function to ensure user profile exists
+  const ensureUserProfile = async (user: User) => {
+    try {
+      // Check if user profile exists
+      const response = await fetch('/api/auth/user-profile')
+      
+      if (response.status === 404) {
+        // Profile doesn't exist, create it
+        console.log('Creating user profile for:', user.email)
+        const createResponse = await fetch('/api/auth/user-profile', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        
+        if (createResponse.ok) {
+          console.log('User profile created successfully')
+        } else {
+          console.error('Failed to create user profile')
+        }
+      } else if (response.ok) {
+        console.log('User profile already exists')
+      }
+    } catch (error) {
+      console.error('Error ensuring user profile:', error)
+    }
+  }
+
   useEffect(() => {
     // Get initial session
     const getInitialSession = async () => {
       const { data: { session } } = await supabase.auth.getSession()
       setSession(session)
       setUser(session?.user ?? null)
+      
+      // Ensure user profile exists if user is logged in
+      if (session?.user) {
+        await ensureUserProfile(session.user)
+      }
+      
       setLoading(false)
     }
 
@@ -35,6 +70,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       async (event, session) => {
         setSession(session)
         setUser(session?.user ?? null)
+        
+        // Handle user profile creation for new sign-ins
+        if (event === 'SIGNED_IN' && session?.user) {
+          console.log('User signed in:', session.user.email)
+          await ensureUserProfile(session.user)
+        }
+        
         setLoading(false)
       }
     )

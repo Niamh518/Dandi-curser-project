@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import Link from 'next/link'
+import UserProfileInfo from '../components/UserProfileInfo'
 
 export default function Dashboard() {
   const { user, loading } = useAuth()
@@ -46,6 +47,11 @@ export default function Dashboard() {
               Back to Home
             </Link>
           </div>
+        </div>
+
+        {/* User Profile Information */}
+        <div className="px-4 py-6 sm:px-0">
+          <UserProfileInfo />
         </div>
 
         {/* User Info Card */}
