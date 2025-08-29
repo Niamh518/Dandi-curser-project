@@ -11,7 +11,7 @@ export interface UserProfile {
 }
 
 export async function createUserProfile(user: User) {
-  const supabase = createClient()
+  const supabase = await createClient()
   
   const userProfile = {
     id: user.id,
@@ -37,7 +37,7 @@ export async function createUserProfile(user: User) {
 }
 
 export async function getUserProfile(userId: string): Promise<UserProfile | null> {
-  const supabase = createClient()
+  const supabase = await createClient()
   
   const { data, error } = await supabase
     .from('user_profiles')
@@ -58,7 +58,7 @@ export async function getUserProfile(userId: string): Promise<UserProfile | null
 }
 
 export async function updateUserProfile(userId: string, updates: Partial<UserProfile>) {
-  const supabase = createClient()
+  const supabase = await createClient()
   
   const { data, error } = await supabase
     .from('user_profiles')
@@ -79,7 +79,7 @@ export async function updateUserProfile(userId: string, updates: Partial<UserPro
 }
 
 export async function deleteUserProfile(userId: string) {
-  const supabase = createClient()
+  const supabase = await createClient()
   
   const { error } = await supabase
     .from('user_profiles')
