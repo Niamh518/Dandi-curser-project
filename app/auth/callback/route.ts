@@ -12,8 +12,9 @@ export async function GET(request: NextRequest) {
     const { error } = await supabase.auth.exchangeCodeForSession(code)
     if (!error) {
       const forwardedHost = request.headers.get('x-forwarded-host')
+      // For localhost development, always use HTTP
       const redirectUrl = forwardedHost 
-        ? `https://${forwardedHost}${next}`
+        ? `http://${forwardedHost}${next}`
         : `${origin}${next}`
       return NextResponse.redirect(redirectUrl)
     }

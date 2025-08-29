@@ -1,0 +1,5 @@
+[33m821a440[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m)[m Fix landing page layout - remove sidebar for non-authenticated users
+[33me4bc6a6[m Integrate beautiful landing page from v0 ZIP file with shadcn/ui components
+[33m38a9132[m Redesign app with sidebar layout and single-page Overview
+[33m20b07a2[m Fix navigation: separate home and dashboard, add sign out button
+[33m3c5a4e7[m Add automatic user profile creation and database setup guide
